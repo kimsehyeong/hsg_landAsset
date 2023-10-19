@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hsgLandAsset.user.consultReq.service.ConsultReqMapper">
+
+<insert id="insertConsultReq" parameterType="consultVO">
+    /* consultReqMapper.insertConsultReq */
+	insert into t_consult
+	set
+		register_no = #{registerNo},
+		consult_info = #{consultInfo},
+		receiver = #{receiver},
+		use_yn = 'Y',
+		consult_status = '접수',
+		answer_type = #{answerType}
+</insert>
+
+<select id="selectListConsultReq" parameterType="String" resultType="consultVO">
+    /* consultReqMapper.selectListConsultReq */
+	select
+		*
+	from t_consult
+	where 
+		register_no = #{registerNo} and del_yn = 'N' 
+	order by consult_date desc
+</select>
+
+<select id="selectListConsultAdmin" resultType="consultVO" parameterType="consultVO">
+    /* consultReqMapper.selectListConsultAdmin */
+	select
+		*
+	from t_consult
+	where 
+	1=1 and
+		del_yn = 'N' 
+	    	ORDER BY consult_date desc
+    	<if test="pageVO != null">
+        limit	#{pageVO.startNo}, #{pageVO.listSize}
+    	</if>	    		
+</select>
+
+<select id="getConsultCount" resultType="int">
+	   /* consultReqMapper.getConsultCount */
+    	SELECT COUNT(*)
+    	FROM	t_consult
+    	where 	1=1	
+    		and del_yn = 'N' 
+    	
+</select>
+
+<select id="consultSelectOne" parameterType="consultVO" resultType="consultVO">
+    /* consultReqMapper.consultSelectOne */
+    select *
+    from t_consult
+    where
+    	consult_id = #{consultId}
+</select>
+
+<select id="isConsultExists" parameterType="consultVO" resultType="boolean">
+    /* consultReqMapper.isConsultExists */
+		select count(*)
+		from t_consult 
+		where
+			register_no = #{registerNo}
+</select>
+
+<update id="updateConsultInfo" parameterType="consultVO">
+    /* onsultReqMapper.updateConsultReq */
+	update t_consult
+	set
+		consult_info = #{consultInfo},
+		answer_type = #{answerType}
+	where
+		consult_id = #{consultId}
+</update>
+
+<update id="deleteConsultReq" parameterType="consultVO">
+    /* onsultReqMapper.deleteConsultReq */
+	update t_consult
+	set
+		del_yn = 'Y'
+	where
+		consult_id = #{consultId}	
+</update>
+
+<update id="updateComments" parameterType="consultVO">
+    /* onsultReqMapper.updateComments */
+    update t_consult
+    set
+    	comment_info = #{commentInfo},
+    	comment_date = now(),
+    	consult_status = '답변완료',
+    	comment_user = #{commentUser}
+   	where
+   		consult_id = #{consultId}	
+    	
+
+
+</update>
+
+
+</mapper>

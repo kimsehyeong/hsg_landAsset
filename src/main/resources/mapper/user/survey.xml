@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hsgLandAsset.user.consultReq.service.SurveyMapper">
+
+
+    <select id="getSatisfyListCount" resultType="int">
+	    SELECT COUNT(*) from t_survey
+	    where 1=1
+	    <if test="startDate != null and startDate != '' ">
+	    and insert_date >= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != '' ">
+	    and #{endDate} >= insert_date
+	    </if>
+    </select>
+
+<select id="selectListSurvey" parameterType="surveyVO" resultType="surveyVO">
+    /* SurveyMapper.selectSurvey */
+	select *
+	from t_survey t1 left outer join t_minwon t2 on t1.register_no = t2.register_no
+	    where 1=1
+	    <if test="startDate != null and startDate != '' ">
+	    and insert_date >= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != '' ">
+	    and #{endDate} >= insert_date
+	    </if>
+	    order by survey_id desc
+	    <if test="pageVO != null">
+	        limit	#{pageVO.startNo}, #{pageVO.listSize}
+	    </if>	
+</select>
+
+<select id="selectSurvey" parameterType="String" resultType="surveyVO">
+    /* SurveyMapper.selectSurvey */
+	select *
+	from t_survey
+	where
+		register_no = #{registerNo}
+</select>
+
+<insert id="insertSurvey" parameterType="surveyVO">
+    /* SurveyMapper.insertSurvey */
+	insert into t_survey
+	set
+		register_no = #{registerNo},
+		survey_title = #{surveyTitle},
+		age = #{age},
+		gender = #{gender},
+		q_satisfy = #{qsatisfy},
+		q_kindness = #{qkindness},
+		q_quickness = #{qquickness},
+		q_professional = #{qprofessional},
+		q_service = #{qservice},
+		suggestion = #{suggestion}
+</insert>
+
+	<select id="getSurveyStats" parameterType="surveyVO" resultType="java.util.Map">
+	    /* SurveyMapper.insertSurvey */
+		select 
+			count(*) tot,
+			count(case when age=20 then 1 end) age_20,
+			count(case when age=30 then 1 end) age_30,
+			count(case when age=40 then 1 end) age_40,
+			count(case when age=50 then 1 end) age_50,
+			count(case when age=60 then 1 end) age_60,
+			count(case when gender='m' then 1 end) sex_m,
+			count(case when gender='w' then 1 end) sex_w,
+			count(case when q_satisfy='A' then 1 end) satisfy_A,
+			count(case when q_satisfy='B' then 1 end) satisfy_B,
+			count(case when q_satisfy='C' then 1 end) satisfy_C,
+			count(case when q_satisfy='D' then 1 end) satisfy_D,
+			count(case when q_satisfy='E' then 1 end) satisfy_E,
+			count(case when q_kindness='A' then 1 end) kindness_A,
+			count(case when q_kindness='B' then 1 end) kindness_B,
+			count(case when q_kindness='C' then 1 end) kindness_C,
+			count(case when q_kindness='D' then 1 end) kindness_D,
+			count(case when q_kindness='E' then 1 end) kindness_E,
+			count(case when q_quickness='A' then 1 end) quickness_A,
+			count(case when q_quickness='B' then 1 end) quickness_B,
+			count(case when q_quickness='C' then 1 end) quickness_C,
+			count(case when q_quickness='D' then 1 end) quickness_D,
+			count(case when q_quickness='E' then 1 end) quickness_E,
+			count(case when q_professional='A' then 1 end) professional_A,
+			count(case when q_professional='B' then 1 end) professional_B,
+			count(case when q_professional='C' then 1 end) professional_C,
+			count(case when q_professional='D' then 1 end) professional_D,
+			count(case when q_professional='E' then 1 end) professional_E,
+			count(case when q_service='A' then 1 end) service_A,
+			count(case when q_service='B' then 1 end) service_B,
+			count(case when q_service='C' then 1 end) service_C,
+			count(case when q_service='D' then 1 end) service_D,
+			count(case when q_service='E' then 1 end) service_E
+		from t_survey t1
+		where 1=1
+		<if test="startDate != null and startDate != '' ">
+	    and insert_date >= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != '' ">
+	    and #{endDate} >= insert_date
+	    </if>
+	</select>
+</mapper>

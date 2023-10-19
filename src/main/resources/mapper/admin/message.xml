@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hsgLandAsset.admin.message.service.AdminMessageMapper">
+
+	<insert id="insertSendMessageLog" parameterType="hashmap">
+	    /* AdminMessageMapper.insertSendMessageLog */
+		INSERT  into t_message_log
+	    SET		register_no = #{register_no},
+	    		receiver = #{receiver},
+	    		sender = #{sender},
+	    		template = #{template},
+	    		status = #{status},
+	    		refer = #{refer},
+	    		result_code = #{result_code},
+	    		content = #{content},
+	    		response = #{response}
+	</insert>
+	
+    <select id="selectSendMessageListCount" parameterType="messageVO" resultType="int">
+    	    /* AdminMessageMapper.insertSendMessageLog */
+        SELECT	count(*)
+        FROM 	t_message_log t1
+        WHERE 	1=1
+		        <if test="kind != null and kind != '' ">
+		        	and t1.kind = #{kind}
+		        </if>
+		        <if test='success != null'>
+					<if test='success == "Y" '>
+					and t1.result_code='0'
+					</if>
+					<if test='success == "N" '>
+					and t1.result_code !='0'
+					</if>
+				</if>
+    </select>
+    
+    <select id="selectOneMessage">
+    
+    
+    </select>
+    
+    
+        <select id="selectSendMessageList" parameterType="messageVO" resultType="messageVO">
+        	    /* AdminMessageMapper.selectSendMessageList */
+        SELECT	t1.*,
+        		t2.mw_afr_shtnm,
+        		(select content from t_message_error_code where id=t1.result_code) error
+        FROM 	t_message_log t1
+        			left outer join t_minwon t2 
+        					on t1.register_no=t2.register_no
+        WHERE 	1=1
+				<if test="registerNo != null">
+					and t1.register_no = #{registerNo}
+				</if>
+		        <if test="kind != null and kind != '' ">
+		        	and t1.kind = #{kind}
+		        </if>
+		        <if test='success != null'>
+					<if test='success == "Y" '>
+					and t1.result_code='0'
+					</if>
+					<if test='success == "N" '>
+					and t1.result_code !='0'
+					</if>
+				</if>
+        order by t1.idx desc
+        <if test="pageVO != null">
+        limit	#{pageVO.startNo}, #{pageVO.listSize}
+    	</if>
+    </select>	
+</mapper>

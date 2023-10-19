@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hsgLandAsset.admin.user.service.UserMapper">
+
+    <insert id="insertUser" parameterType="userVO">
+    /* UserMapper.insertUser */
+    	INSERT INTO T_USER
+    	SET		
+    			ID=#{id},
+    			PWD=#{pwd},
+    			USERNAME=#{username},
+    			task = #{task},
+    			user_type='Y',
+    			tel = #{tel},
+    			insert_id = #{insertId},
+    			open_consult_yn = #{openConsultYn},
+    			use_yn = 'Y',
+    			del_yn = 'N'
+    </insert>
+    <select id="selectOneUser" parameterType="userVo" resultType="userVO">
+    /* UserMapper.selectOneUser */
+    	select *
+    	from t_user
+    	where
+    		user_no = #{userNo}
+    </select>
+    
+    <update id="updateUser" parameterType="userVO">
+    /* UserMapper.updateUser */
+    update t_user
+    set
+	    <if test="pwd != null and pwd != ''">
+	    		pwd = #{pwd},
+    	</if>	    
+			ID=#{id},
+			USERNAME=#{username},
+			update_id = #{updateId},
+    		task = #{task},		
+    		open_consult_yn = #{openConsultYn},
+    		use_yn = #{useYn},
+			tel = #{tel}
+	where
+		Id = #{id}		   	
+    </update>
+    
+    <update id="deleteUser" parameterType="userVO">
+    /* UserMapper.deleteUser */
+    update t_user
+    set
+    	delete_id = #{deleteId},
+		del_yn = 'Y'
+	where
+		Id = #{id}		   			   	
+    </update>    
+    
+    
+    <select id="selectList" parameterType="userVO" resultType="userVO">
+    	    /* UserMapper.selectList */
+    	select *
+    	from t_user
+    	where 	1=1 and
+    	del_yn = 'N'    	
+    	ORDER BY USER_NO desc    	
+    	<if test="pageVO != null">
+        limit	#{pageVO.startNo}, #{pageVO.listSize}
+    	</if>    	
+    </select>
+
+	<select id="getUserListCount" resultType="int">
+	   /* UserMapper.getUserListCount */
+    	SELECT COUNT(*)
+    	FROM	T_USER
+    	where 	1=1	
+	</select>
+	
+	<select id="checkId" parameterType="userVO" resultType="int">
+	   /* UserMapper.checkId */
+		select count(*)
+		from t_user
+		where
+			id = #{id}
+	</select>
+	
+    <select id="getUserById" parameterType="String" resultType="userVO">
+    	   /* UserMapper.getUserById */
+        SELECT	*
+        FROM 	t_user
+        where 	id = #{id} 
+    </select>	
+</mapper>

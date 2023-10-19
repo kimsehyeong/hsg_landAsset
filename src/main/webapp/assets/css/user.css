@@ -1,0 +1,131 @@
+.navbar-brand-box {
+    width: 270px;
+}
+
+@media (max-width: 992px) {
+    
+    .navbar-brand-box {
+        width: 70px;
+    }
+}
+
+.vertical-menu {
+    width: 270px;
+}
+
+.main-content {
+    margin-left: 270px;
+}
+
+.head-title.mb span {
+    margin-left: 5px;
+    font-size: 16px;
+    line-height: 27px;
+}
+
+.table-type2 td {
+    text-align: center !important;
+}
+
+.th-type2 {
+    background: #191919 !important;
+    border: #191919 !important;
+}
+
+td.text-left {
+    text-align: left !important;
+}
+
+.border-0 {
+    border: 0;
+}
+
+.table td {
+    text-align: left;
+}
+
+.step {
+    text-align: center;
+}
+
+.step ul {
+    /*overflow: hidden;*/
+    position: relative;
+}
+
+.step ul li {
+    float: left;
+    width: 20%;
+    text-align: center;
+}
+
+.step ul li:first-child a {
+    top: -15px;
+}
+
+.step ul li:last-child a {
+    top: -15px;
+}
+
+@media (max-width: 480px) {
+
+    .step ul li a {
+        font-size: 12px;
+    }
+
+    .step ul li:first-child a {
+        top: -12px;
+    }
+
+    .step ul li:last-child a {
+        top: -12px;
+    }
+}
+
+.step ul li:before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10%;
+    z-index: 0;
+    border-top: 1px solid #aaa;
+    width: 80%;
+}
+
+.step ul li a {
+    font-weight: bold;
+    color: #aaa;
+    position: relative;
+    z-index: 1;
+}
+
+
+.step ul li.active a {
+    color: #626ed4;
+}
+
+.step ul li a:before {
+    content: "●";
+    display: block;
+    height: 33px;
+}
+
+.step ul li:nth-child(1) a:before {
+    content: "\f4ff";
+    display: block;
+    font-family: FontAwesome;
+    font-size: 30px;
+    height: 45px;
+}
+
+.step ul li:nth-child(5) a:before {
+    content: "\f4fc";
+    display: block;
+    font-family: FontAwesome;
+    font-size: 30px;
+    height: 45px;
+}
+
+.wizard > .steps > ul > li {
+    width: 20%;
+}

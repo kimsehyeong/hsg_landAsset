@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+<!-- 담당공무원 관리자 -->
+	<definition name="adminLayout" template="/WEB-INF/jsp/layout/admin/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/admin/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/admin/footer.jsp" />
+	</definition>
+	
+	<definition name="*.admin" extends="adminLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/admin/{1}.jsp" />
+    </definition>
+    
+	<definition name="*/*.admin" extends="adminLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/admin/{1}/{2}.jsp" />
+    </definition>
+   
+    <definition name="*/*/*.admin" extends="adminLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/admin/{1}/{2}/{3}.jsp" />
+    </definition>
+
+<!-- 총관리자 -->
+
+	<definition name="frontLayout" template="/WEB-INF/jsp/layout/front/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/front/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/front/footer.jsp" />
+	</definition>
+	
+	<definition name="*.front" extends="frontLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/front/{1}.jsp" />
+    </definition>
+    
+	<definition name="*/*.front" extends="frontLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/front/{2}.jsp" />
+    </definition>
+   
+    <definition name="*/*/*.front" extends="frontLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/front/{1}/{2}/{3}.jsp" />
+    </definition>
+    
+    
+    <definition name="minwonLayout" template="/WEB-INF/jsp/layout/minwon/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/minwon/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/minwon/footer.jsp" />
+	</definition>
+	
+	<definition name="*.minwon" extends="minwonLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/minwon/{1}.jsp" />
+    </definition>
+    
+	<definition name="*/*.minwon" extends="minwonLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/minwon/{2}.jsp" />
+    </definition>
+   
+    <definition name="*/*/*.minwon" extends="minwonLayout">
+		<put-attribute name="body" value="/WEB-INF/jsp/minwon/{1}/{2}/{3}.jsp" />
+    </definition>
+
+
+
+	<!-- empty -->
+	<definition name="*" template="/WEB-INF/jsp/{1}.jsp"></definition>
+	<definition name="*/*" template="/WEB-INF/jsp/{1}/{2}.jsp"></definition>
+	<definition name="*/*/*" template="/WEB-INF/jsp/{1}/{2}/{3}.jsp"></definition>
+	<definition name="*/*/*/*" template="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp"></definition>
+
+
+
+
+
+
+
+
+</tiles-definitions>

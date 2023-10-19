@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hsgLandAsset.admin.minwon.service.AdminMinwonMapper">
+
+    <insert id="minwonFileUpload" parameterType="map" >
+    /* AdminMinwonMapper.minwonFileUpload */
+	insert into t_uploaded_files
+	set
+		register_no = #{registerNo},
+		file_name = #{fileName},
+		file_pk = #{filePk},
+		file_comments = #{fileComments},
+		file_size = #{fileSize},
+		del_yn = 'N',
+		insert_id = #{insertId},
+		file_path = #{filePath}
+    </insert>
+    
+    <select id="minwonFileList" resultType="fileVO" parameterType="minwonVO">
+    /* AdminMinwonMapper.minwonFileUpload */
+	select 
+	*
+	from  t_uploaded_files
+	where
+		del_yn = 'N' and register_no = #{registerNo}
+    </select>
+    
+    <update id="minwonFiledelete" parameterType="FileVO">
+        /* AdminMinwonMapper.minwonFiledelete */
+    
+    	update t_uploaded_files
+    	set
+    		delete_id = #{deleteId},
+    		del_yn = 'Y'
+    	where
+    		id = #{id}	
+    </update>
+    
+    <insert id="insertLandLocation" parameterType="landLocationVO">
+  /* AdminMinwonMapper.insertLandLocation */
+    insert into t_land_location
+    set
+    	register_no = #{registerNo},
+    	location = #{location},
+    	insert_id = #{insertId}
+    </insert>
+    
+    <update id="updateLandLocation" parameterType="landLocationVO">
+ 	 /* AdminMinwonMapper.insertLandLocation */
+    update t_land_location
+    set
+    	location = #{location},
+    	update_id = #{updateId}
+    where
+    	 register_no = #{registerNo}
+    		
+    </update>    
+    
+	<select id="isLandIdExists" parameterType="landLocationVO" resultType="boolean">
+  		/* AdminMinwonMapper.isLandIdExists */
+	    SELECT COUNT(*) > 0 FROM t_land_location WHERE register_no = #{registerNo}
+	</select>
+    
+    <select id="selectLandLocation" parameterType="landLocationVO" resultType="landLocationVO">
+  /* AdminMinwonMapper.selectLandLocation */
+    select *
+    from t_land_location
+    where
+    	 register_no = #{registerNo}
+    </select>
+    
+    <select id="selectOneMinwon" parameterType="hashmap" resultType="hashmap">
+       	  /* AdminMinwonMapper.selectOneMinwon */
+    select *
+    from t_minwon
+    where
+    	register_no = #{register_no}
+    </select>
+    
+   	<insert id="insertMinwon" parameterType="hashmap">
+   	  /* AdminMinwonMapper.insertMinwon */
+	insert into t_minwon 
+		(register_no, take_ymd, mw_afr_shtnm, mw_aplct_nm, mw_aplct_hpno, dpp_usr_nm, deal_plan_ymd) 
+	values 
+		(#{mw_take_no}, #{take_ymd}, #{mw_afr_shtnm}, #{mw_aplct_nm}, #{mw_aplct_hpno}, #{dpp_usr_nm}, #{deal_plan_ymd})  
+    on duplicate key update 
+    	take_ymd = #{take_ymd},
+    	mw_afr_shtnm = #{mw_afr_shtnm},
+    	mw_aplct_nm = #{mw_aplct_nm},
+    	mw_aplct_hpno = #{mw_aplct_hpno},
+    	dpp_usr_nm = #{dpp_usr_nm},
+    	deal_plan_ymd = #{deal_plan_ymd}
+	</insert>
+	
+	<select id="getCommentStatus" parameterType="hashmap" resultType="hashmap">
+			/* AdminMinwonMapper.getCommentStatus */
+		select 
+			(select count(*) from t_consult where del_yn='N' and register_no = #{mw_take_no}) consult,
+			(select count(*) from t_consult where del_yn='N' and comment_date is not null and register_no = #{mw_take_no}) answered,
+			(select count(*) from t_survey where register_no = #{mw_take_no}) satisfaction,
+			(select count(*) from t_message_log where status='접수확인' and register_no = #{mw_take_no}) progress,
+			(select count(*) from t_message_log where status='해결' and register_no = #{mw_take_no}) progress2
+		from dual
+	</select>
+	
+	
+	<select id="selectMinwonListForSendMessage" resultType="hashmap">
+			    /* AdminMinwonMapper.selectMinwonListForSendMessage */
+		select 
+			(select count(*) from t_message_log where register_no=t1.register_no and template='progress' and status='접수확인') p1,
+			(select count(*) from t_message_log where register_no=t1.register_no and template='progress' and status='해결') p2,
+			t1.* from t_minwon t1
+		where 1=1
+			and take_ymd >= date_format(current_date - interval 30 day, '%Y%m%d')
+			order by register_no
+		<!-- limit 1 -->
+	</select>
+	
+	<select id="selectProgressMsgCount" parameterType="hashmap" resultType="int">
+		    /* AdminMinwonMapper.selectProgressMsgCount */
+		SELECT 
+			COUNT(*) 
+		FROM 
+			t_message_log
+		WHERE	
+			result_code = '0'
+			and register_no = #{register_no} 
+			<if test="bpm_step_nm != null and bpm_step_nm != '' ">
+			and	status = #{bpm_step_nm}
+			</if>
+	</select>
+	
+	<select id="getRegisterNoBySearch" parameterType="java.util.Map" resultType="java.util.Map">
+	    /* AdminMinwonMapper.getRegisterNoBySearch */
+		select 
+			w.register_no
+		from
+			(select 
+				(select count(*) from t_message_log where status='접수확인' and register_no = t1.register_no) progress,
+				(select count(*) from t_message_log where status='해결' and register_no = t1.register_no) progress2,
+				(select count(*) from t_consult where del_yn='N' and register_no = t1.register_no) consult,
+				(select count(*) from t_consult where del_yn='N' and register_no = t1.register_no and comment_date is not null ) answered,
+				t1.register_no
+			from 
+				t_minwon t1
+			where 
+				1=1
+				<if test="startDate != null and startDate != '' ">
+			    and take_ymd >= #{startDate}
+			    </if>
+			    <if test="endDate != null and endDate != '' ">
+			    and #{endDate} >= take_ymd
+			    </if>
+				) w
+		where 1=1
+		<if test='progress != null'>
+			<if test='progress == "Y" '>
+			and progress > 0
+			</if>
+			<if test='progress == "N" '>
+			and progress = 0
+			</if>
+		</if>
+		<if test='progress2 != null'>
+			<if test='progress2 == "Y" '>
+			and progress2 > 0
+			</if>
+			<if test='progress2 == "N" '>
+			and progress2 = 0
+			</if>
+		</if>
+		<if test='answer != null'>
+			<if test='answer == "Y" '>
+			and consult > 0 and consult = answered
+			</if>
+			<if test='answer == "N" '>
+			and consult > 0 and consult > answered
+			</if>
+		</if>
+		limit 200
+	</select>
+	
+	
+</mapper>
